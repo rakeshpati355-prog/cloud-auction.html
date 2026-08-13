@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BidZone Online Auction</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 16px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #facc15;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #facc15;
+        }
+
+        button {
+            border: none;
+            border-radius: 5px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .login-btn {
+            background: #facc15;
+            color: #172554;
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        .user-name {
+            color: #facc15;
+            font-weight: bold;
+        }
+
+        .hero {
+            background: linear-gradient(
+                rgba(23, 37, 84, 0.9),
+                rgba(23, 37, 84, 0.9)
+            ),
+            url("https://images.unsplash.com/photo-1556742049-0cfed4f6a45d")
+            center/cover;
+
+            color: white;
+            text-align: center;
+            padding: 75px 20px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .hero button,
+        .submit-btn {
+            background: #facc15;
+            color: #172554;
+            padding: 12px 22px;
+            font-size: 15px;
+        }
+
+        .container {
+            width: 86%;
+            max-width: 1250px;
+            margin: 35px auto;
+        }
+
+        .section-title {
+            color: #172554;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .filter-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-box input,
+        .filter-box select {
+            flex: 1;
+            min-width: 220px;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        .auction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+            gap: 25px;
+        }
+
+        .auction-card {
+            background: white;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .auction-card img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+        }
+
+        .auction-content {
+            padding: 18px;
+        }
+
+        .auction-content h3 {
+            color: #172554;
+            margin-bottom: 10px;
+        }
+
+        .category {
+            color: #64748b;
+            font-size: 14px;
+            margin: 7px 0;
+        }
+
+        .price {
+            color: #15803d;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 14px 0 8px;
+        }
+
+        .hidden-price {
+            color: #7c3aed;
+            font-weight: bold;
+            margin: 14px 0 8px;
+        }
+
+        .timer {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        .bid-area {
+            display: flex;
+            gap: 7px;
+        }
+
+        .bid-area input {
+            width: 60%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+        }
+
+        .bid-area button {
+            width: 40%;
+            background: #172554;
+            color: white;
+        }
+
+        .buy-now-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: #16a34a;
+            color: white;
+        }
+
+        .watch-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: #e2e8f0;
+            color: #172554;
+        }
+
+        .watch-btn.active {
+            background: #facc15;
+        }
+
+        .status {
+            min-height: 22px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .panel {
+            background: white;
+            padding: 28px;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .dashboard-box {
+            background: #dbeafe;
+            color: #172554;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .dashboard-box h3 {
+            font-size: 28px;
+        }
+
+        .history-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .history-list li {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sell-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .sell-form input,
+        .sell-form select,
+        .sell-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        .sell-form textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.65);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            position: relative;
+            background: white;
+            width: 90%;
+            max-width: 420px;
+            padding: 28px;
+            border-radius: 10px;
+        }
+
+        .modal-box h2 {
+            text-align: center;
+            color: #172554;
+            margin-bottom: 18px;
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+        }
+
+        .modal-box button:not(.close-btn) {
+            width: 100%;
+            margin-top: 7px;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            background: transparent;
+            color: #dc2626;
+            font-size: 24px;
+        }
+
+        .switch-form {
+            color: #2563eb;
+            text-align: center;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        .modal-message {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        footer {
+            background: #172554;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 650px) {
+            header {
+                flex-direction: column;
+                gap: 13px;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">Bid<span>Zone</span></div>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#auctions">Auctions</a>
+            <a href="#sell">Sell</a>
+            <a href="#dashboard">Dashboard</a>
+
+            <span class="user-name" id="userName"></span>
+
+            <button class="login-btn" id="loginButton" onclick="openLogin()">
+                Login
+            </button>
+
+            <button
+                class="logout-btn"
+                id="logoutButton"
+                onclick="logout()"
+                style="display: none;"
+            >
+                Logout
+            </button>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <h1>Find It. Bid It. Win It.</h1>
+        <p>Buy and sell products through online auctions.</p>
+        <button onclick="scrollToSection('auctions')">
+            Explore Auctions
+        </button>
+    </section>
+
+    <main class="container">
+
+        <section id="auctions">
+            <h2 class="section-title">Live Auctions</h2>
+
+            <div class="filter-box">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search auction items..."
+                    onkeyup="filterAuctions()"
+                >
+
+                <select id="categoryFilter" onchange="filterAuctions()">
+                    <option value="all">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Vehicles">Vehicles</option>
+                    <option value="Art">Art</option>
+                    <option value="Furniture">Furniture</option>
+                </select>
+            </div>
+
+            <div class="auction-grid" id="auctionGrid"></div>
+        </section>
+
+        <section class="panel" id="dashboard">
+            <h2 class="section-title">User Dashboard</h2>
+
+            <div class="dashboard">
+                <div class="dashboard-box">
+                    <h3 id="totalBids">0</h3>
+                    <p>Total Bids</p>
+                </div>
+
+                <div class="dashboard-box">
+                    <h3 id="watchCount">0</h3>
+                    <p>Watchlist Items</p>
+                </div>
+
+                <div class="dashboard-box">
+                    <h3 id="sellingCount">0</h3>
+                    <p>Items Selling</p>
+                </div>
+            </div>
+
+            <h3>My Bid History</h3>
+
+            <ul class="history-list" id="bidHistory">
+                <li>Login to view your bid history.</li>
+            </ul>
+        </section>
+
+        <section class="panel" id="sell">
+            <h2 class="section-title">Create New Auction</h2>
+
+            <form class="sell-form" id="sellForm">
+
+                <input
+                    type="text"
+                    id="itemName"
+                    placeholder="Item name"
+                    required
+                >
+
+                <input
+                    type="number"
+                    id="startingPrice"
+                    placeholder="Starting price"
+                    min="1"
+                    required
+                >
+
+                <select id="itemCategory" required>
+                    <option value="">Select category</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Vehicles">Vehicles</option>
+                    <option value="Art">Art</option>
+                    <option value="Furniture">Furniture</option>
+                </select>
+
+                <select id="bidType" required>
+                    <option value="standard">Standard Bid</option>
+                    <option value="proxy">Proxy / Automatic Bid</option>
+                    <option value="buyNow">Buy Now Auction</option>
+                    <option value="sealed">Sealed Bid</option>
+                </select>
+
+                <input
+                    type="number"
+                    id="minimumIncrement"
+                    placeholder="Minimum bid increment"
+                    min="1"
+                    value="50"
+                    required
+                >
+
+                <input
+                    type="number"
+                    id="reservePrice"
+                    placeholder="Reserve price"
+                    min="0"
+                >
+
+                <input
+                    type="number"
+                    id="buyNowPrice"
+                    placeholder="Buy Now price"
+                    min="0"
+                >
+
+                <input
+                    type="url"
+                    id="itemImage"
+                    placeholder="Image URL"
+                    required
+                >
+
+                <textarea
+                    class="full-width"
+                    id="itemDescription"
+                    placeholder="Item description"
+                    required
+                ></textarea>
+
+                <button class="submit-btn full-width" type="submit">
+                    Create Auction
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 BidZone Online Auction Platform</p>
+    </footer>
+
+    <!-- Login and registration modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-box">
+            <button class="close-btn" onclick="closeLogin()">×</button>
+
+            <h2 id="authTitle">Login</h2>
+
+            <input
+                type="text"
+                id="authName"
+                placeholder="Full name"
+                style="display: none;"
+            >
+
+            <input
+                type="email"
+                id="authEmail"
+                placeholder="Email address"
+            >
+
+            <input
+                type="password"
+                id="authPassword"
+                placeholder="Password"
+            >
+
+            <button
+                class="submit-btn"
+                id="authSubmit"
+                onclick="loginUser()"
+            >
+                Login
+            </button>
+
+            <p
+                class="switch-form"
+                id="switchText"
+                onclick="showRegister()"
+            >
+                New user? Create an account
+            </p>
+
+            <p class="modal-message" id="authMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        let auctions = JSON.parse(
+            localStorage.getItem("auctions")
+        ) || [
+            {
+                id: 1,
+                name: "Apple MacBook Pro",
+                category: "Electronics",
+                description: "Powerful laptop for students and professionals.",
+                price: 75000,
+                image: "https://images.unsplash.com/photo-1517336714739-489689fd1ca8",
+                endTime: Date.now() + 86400000,
+                seller: "Admin",
+                bidType: "standard",
+                minimumIncrement: 1000,
+                reservePrice: 80000,
+                buyNowPrice: 95000,
+                bids: []
+            },
+            {
+                id: 2,
+                name: "Vintage Wrist Watch",
+                category: "Fashion",
+                description: "Classic vintage watch in excellent condition.",
+                price: 12000,
+                image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d",
+                endTime: Date.now() + 70000000,
+                seller: "Admin",
+                bidType: "proxy",
+                minimumIncrement: 500,
+                reservePrice: 15000,
+                buyNowPrice: 25000,
+                bids: []
+            },
+            {
+                id: 3,
+                name: "Rare Modern Painting",
+                category: "Art",
+                description: "Beautiful abstract painting for home decoration.",
+                price: 20000,
+                image: "https://images.unsplash.com/photo-1549490349-8643362247b5",
+                endTime: Date.now() + 60000000,
+                seller: "Admin",
+                bidType: "sealed",
+                minimumIncrement: 1000,
+                reservePrice: 30000,
+                buyNowPrice: 50000,
+                bids: []
+            }
+        ];
+
+        let users = JSON.parse(
+            localStorage.getItem("users")
+        ) || [
+            {
+                name: "Demo User",
+                email: "demo@example.com",
+                password: "123456"
+            }
+        ];
+
+        let currentUser = JSON.parse(
+            localStorage.getItem("currentUser")
+        ) || null;
+
+        let bidHistory = JSON.parse(
+            localStorage.getItem("bidHistory")
+        ) || [];
+
+        let watchlist = JSON.parse(
+            localStorage.getItem("watchlist")
+        ) || [];
+
+        let proxyBids = JSON.parse(
+            localStorage.getItem("proxyBids")
+        ) || [];
+
+        let sealedBids = JSON.parse(
+            localStorage.getItem("sealedBids")
+        ) || [];
+
+        function saveData() {
+            localStorage.setItem("auctions", JSON.stringify(auctions));
+            localStorage.setItem("users", JSON.stringify(users));
+            localStorage.setItem("bidHistory", JSON.stringify(bidHistory));
+            localStorage.setItem("watchlist", JSON.stringify(watchlist));
+            localStorage.setItem("proxyBids", JSON.stringify(proxyBids));
+            localStorage.setItem("sealedBids", JSON.stringify(sealedBids));
+
+            if (currentUser) {
+                localStorage.setItem(
+                    "currentUser",
+                    JSON.stringify(currentUser)
+                );
+            }
+        }
+
+        function updateHeader() {
+            const userName = document.getElementById("userName");
+            const loginButton = document.getElementById("loginButton");
+            const logoutButton = document.getElementById("logoutButton");
+
+            if (currentUser) {
+                userName.innerText = `Hello, ${currentUser.name}`;
+                loginButton.style.display = "none";
+                logoutButton.style.display = "inline-block";
+            } else {
+                userName.innerText = "";
+                loginButton.style.display = "inline-block";
+                logoutButton.style.display = "none";
+            }
+
+            updateDashboard();
+        }
+
+        function openLogin() {
+            document.getElementById("authModal").style.display = "flex";
+            document.getElementById("authTitle").innerText = "Login";
+            document.getElementById("authName").style.display = "none";
+            document.getElementById("authSubmit").innerText = "Login";
+            document.getElementById("authSubmit").onclick = loginUser;
+            document.getElementById("switchText").innerText =
+                "New user? Create an account";
+            document.getElementById("switchText").onclick = showRegister;
+            document.getElementById("authMessage").innerText = "";
+        }
+
+        function showRegister() {
+            document.getElementById("authTitle").innerText =
+                "Create Account";
+
+            document.getElementById("authName").style.display = "block";
+
+            document.getElementById("authSubmit").innerText =
+                "Register";
+
+            document.getElementById("authSubmit").onclick =
+                registerUser;
+
+            document.getElementById("switchText").innerText =
+                "Already have an account? Login";
+
+            document.getElementById("switchText").onclick = openLogin;
+        }
+
+        function closeLogin() {
+            document.getElementById("authModal").style.display = "none";
+
+            document.getElementById("authName").value = "";
+            document.getElementById("authEmail").value = "";
+            document.getElementById("authPassword").value = "";
+        }
+
+        function registerUser() {
+            const name = document.getElementById("authName").value.trim();
+            const email = document.getElementById("authEmail").value
+                .trim()
+                .toLowerCase();
+
+            const password =
+                document.getElementById("authPassword").value;
+
+            const message = document.getElementById("authMessage");
+
+            if (!name || !email || !password) {
+                message.style.color = "#dc2626";
+                message.innerText = "Please complete all fields.";
+                return;
+            }
+
+            if (password.length < 6) {
+                message.style.color = "#dc2626";
+                message.innerText =
+                    "Password must contain at least 6 characters.";
+                return;
+            }
+
+            if (users.some(user => user.email === email)) {
+                message.style.color = "#dc2626";
+                message.innerText = "Email is already registered.";
+                return;
+            }
+
+            const newUser = {
+                name: name,
+                email: email,
+                password: password
+            };
+
+            users.push(newUser);
+            currentUser = newUser;
+
+            saveData();
+            updateHeader();
+            closeLogin();
+
+            alert("Registration successful!");
+        }
+
+        function loginUser() {
+            const email = document.getElementById("authEmail").value
+                .trim()
+                .toLowerCase();
+
+            const password =
+                document.getElementById("authPassword").value;
+
+            const message = document.getElementById("authMessage");
+
+            const user = users.find(
+                user =>
+                    user.email === email &&
+                    user.password === password
+            );
+
+            if (!user) {
+                message.style.color = "#dc2626";
+                message.innerText = "Invalid email or password.";
+                return;
+            }
+
+            currentUser = user;
+            saveData();
+            updateHeader();
+            closeLogin();
+
+            alert(`Welcome, ${user.name}!`);
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem("currentUser");
+            updateHeader();
+            alert("You have been logged out.");
+        }
+
+        function getBidTypeName(type) {
+            if (type === "proxy") {
+                return "Proxy / Automatic Bid";
+            }
+
+            if (type === "buyNow") {
+                return "Buy Now Auction";
+            }
+
+            if (type === "sealed") {
+                return "Sealed Bid";
+            }
+
+            return "Standard Bid";
+        }
+
+        function displayAuctions(list = auctions) {
+            const grid = document.getElementById("auctionGrid");
+
+            if (list.length === 0) {
+                grid.innerHTML = "<p>No auctions found.</p>";
+                return;
+            }
+
+            grid.innerHTML = list.map(item => {
+                const watched = watchlist.includes(item.id);
+                const isSealed = item.bidType === "sealed";
+                const isSold = item.sold === true;
+
+                return `
+                    <div class="auction-card">
+                        <img src="${item.image}" alt="${item.name}">
+
+                        <div class="auction-content">
+                            <h3>${item.name}</h3>
+
+                            <p class="category">
+                                Category: ${item.category}
+                            </p>
+
+                            <p class="category">
+                                Bid Type:
+                                ${getBidTypeName(item.bidType)}
+                            </p>
+
+                            <p>${item.description}</p>
+
+                            <p class="category">
+                                Seller: ${item.seller}
+                            </p>
+
+                            ${
+                                isSealed
+                                    ? `
+                                    <div class="hidden-price">
+                                        Current Bid: Hidden
+                                    </div>
+                                    `
+                                    : `
+                                    <div class="price">
+                                        Current Bid:
+                                        ₹<span id="price-${item.id}">
+                                            ${item.price}
+                                        </span>
+                                    </div>
+                                    `
+                            }
+
+                            <p class="category">
+                                Minimum Increment:
+                                ₹${item.minimumIncrement}
+                            </p>
+
+                            ${
+                                item.reservePrice > 0
+                                    ? `
+                                    <p class="category">
+                                        Reserve Price:
+                                        ₹${item.reservePrice}
+                                    </p>
+                                    `
+                                    : ""
+                            }
+
+                            <div
+                                class="timer"
+                                id="timer-${item.id}"
+                            >
+                                Loading...
+                            </div>
+
+                            ${
+                                isSold
+                                    ? `
+                                    <p class="status"
+                                       style="color:#dc2626;">
+                                        Item sold
+                                    </p>
+                                    `
+                                    : `
+                                    <div class="bid-area">
+                                        <input
+                                            type="number"
+                                            id="bid-${item.id}"
+                                            min="${item.price +
+                                            item.minimumIncrement}"
+                                            placeholder="${
+                                                item.bidType === "proxy"
+                                                    ? "Maximum bid"
+                                                    : "Enter bid"
+                                            }"
+                                        >
+
+                                        <button
+                                            onclick="placeBid(${item.id})"
+                                        >
+                                            ${
+                                                item.bidType === "proxy"
+                                                    ? "Set Max Bid"
+                                                    : item.bidType === "sealed"
+                                                    ? "Submit Bid"
+                                                    : "Place Bid"
+                                            }
+                                        </button>
+                                    </div>
+
+                                    <div
+                                        class="status"
+                                        id="status-${item.id}"
+                                    ></div>
+
+                                    ${
+                                        item.buyNowPrice > 0
+                                            ? `
+                                            <button
+                                                class="buy-now-btn"
+                                                onclick="buyNow(${item.id})"
+                                            >
+                                                Buy Now for
+                                                ₹${item.buyNowPrice}
+                                            </button>
+                                            `
+                                            : ""
+                                    }
+                                    `
+                            }
+
+                            <button
+                                class="watch-btn ${
+                                    watched ? "active" : ""
+                                }"
+                                onclick="toggleWatchlist(${item.id})"
+                            >
+                                ${
+                                    watched
+                                        ? "★ In Watchlist"
+                                        : "☆ Add to Watchlist"
+                                }
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            list.forEach(item => startTimer(item));
+        }
+
+        function startTimer(item) {
+            const timerElement =
+                document.getElementById(`timer-${item.id}`);
+
+            if (!timerElement) {
+                return;
+            }
+
+            const timer = setInterval(() => {
+                const remaining = item.endTime - Date.now();
+
+                if (remaining <= 0) {
+                    timerElement.innerText = "Auction ended";
+                    clearInterval(timer);
+                    return;
+                }
+
+                const days = Math.floor(
+                    remaining / (1000 * 60 * 60 * 24)
+                );
+
+                const hours = Math.floor(
+                    (remaining / (1000 * 60 * 60)) % 24
+                );
+
+                const minutes = Math.floor(
+                    (remaining / (1000 * 60)) % 60
+                );
+
+                const seconds = Math.floor(
+                    (remaining / 1000) % 60
+                );
+
+                timerElement.innerText =
+                    `Ends in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+
+        function placeBid(id) {
+            if (!currentUser) {
+                alert("Please login before placing a bid.");
+                openLogin();
+                return;
+            }
+
+            const auction = auctions.find(item => item.id === id);
+            const input = document.getElementById(`bid-${id}`);
+            const status = document.getElementById(`status-${id}`);
+            const amount = Number(input.value);
+
+            if (!amount || amount <= 0) {
+                status.style.color = "#dc2626";
+                status.innerText = "Enter a valid bid amount.";
+                return;
+            }
+
+            if (Date.now() >= auction.endTime) {
+                status.style.color = "#dc2626";
+                status.innerText = "This auction has ended.";
+                return;
+            }
+
+            /*
+                Sealed bidding
+            */
+            if (auction.bidType === "sealed") {
+                sealedBids.push({
+                    auctionId: auction.id,
+                    auctionName: auction.name,
+                    userEmail: currentUser.email,
+                    amount: amount,
+                    submittedAt: new Date().toLocaleString()
+                });
+
+                bidHistory.push({
+                    userEmail: currentUser.email,
+                    itemName: auction.name,
+                    amount: amount,
+                    type: "Sealed bid",
+                    time: new Date().toLocaleString()
+                });
+
+                saveData();
+
+                status.style.color = "#15803d";
+                status.innerText =
+                    "Your sealed bid was submitted successfully.";
+
+                input.value = "";
+                updateDashboard();
+                return;
+            }
+
+            /*
+                Proxy / automatic bidding
+            */
+            if (auction.bidType === "proxy") {
+                if (amount <= auction.price) {
+                    status.style.color = "#dc2626";
+                    status.innerText =
+                        `Maximum bid must be higher than ₹${auction.price}.`;
+                    return;
+                }
+
+                const existingProxy = proxyBids.find(
+                    bid =>
+                        bid.auctionId === auction.id &&
+                        bid.userEmail === currentUser.email
+                );
+
+                if (existingProxy) {
+                    existingProxy.maximumBid = amount;
+                } else {
+                    proxyBids.push({
+                        auctionId: auction.id,
+                        userEmail: currentUser.email,
+                        maximumBid: amount
+                    });
+                }
+
+                const allProxyBids = proxyBids
+                    .filter(bid => bid.auctionId === auction.id)
+                    .sort((a, b) => b.maximumBid - a.maximumBid);
+
+                const highest = allProxyBids[0];
+                const secondHighest = allProxyBids[1];
+
+                let automaticPrice;
+
+                if (secondHighest) {
+                    automaticPrice = Math.min(
+                        highest.maximumBid,
+                        secondHighest.maximumBid +
+                        auction.minimumIncrement
+                    );
+                } else {
+                    automaticPrice = Math.min(
+                        highest.maximumBid,
+                        auction.price +
+                        auction.minimumIncrement
+                    );
+                }
+
+                auction.price = automaticPrice;
+
+                bidHistory.push({
+                    userEmail: currentUser.email,
+                    itemName: auction.name,
+                    amount: amount,
+                    type: "Proxy bid",
+                    time: new Date().toLocaleString()
+                });
+
+                saveData();
+
+                document.getElementById(`price-${id}`).innerText =
+                    automaticPrice;
+
+                status.style.color = "#15803d";
+                status.innerText =
+                    `Automatic bidding enabled up to ₹${amount}.`;
+
+                input.value = "";
+                updateDashboard();
+                return;
+            }
+
+            /*
+                Standard bidding
+            */
+            const minimumRequired =
+                auction.price + auction.minimumIncrement;
+
+            if (amount < minimumRequired) {
+                status.style.color = "#dc2626";
+                status.innerText =
+                    `Bid must be at least ₹${minimumRequired}.`;
+                return;
+            }
+
+            auction.price = amount;
+            auction.bids = auction.bids || [];
+
+            auction.bids.push({
+                userEmail: currentUser.email,
+                amount: amount,
+                time: new Date().toLocaleString()
+            });
+
+            bidHistory.push({
+                userEmail: currentUser.email,
+                itemName: auction.name,
+                amount: amount,
+                type: "Standard bid",
+                time: new Date().toLocaleString()
+            });
+
+            saveData();
+
+            document.getElementById(`price-${id}`).innerText = amount;
+
+            status.style.color = "#15803d";
+            status.innerText =
+                `Bid accepted: ₹${amount}.`;
+
+            input.value = "";
+            updateDashboard();
+        }
+
+        function buyNow(id) {
+            if (!currentUser) {
+                alert("Please login before buying.");
+                openLogin();
+                return;
+            }
+
+            const auction = auctions.find(item => item.id === id);
+
+            if (Date.now() >= auction.endTime) {
+                alert("This auction has ended.");
+                return;
+            }
+
+            const confirmed = confirm(
+                `Buy ${auction.name} for ₹${auction.buyNowPrice}?`
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            auction.sold = true;
+            auction.buyer = currentUser.email;
+            auction.finalPrice = auction.buyNowPrice;
+            auction.endTime = Date.now();
+
+            bidHistory.push({
+                userEmail: currentUser.email,
+                itemName: auction.name,
+                amount: auction.buyNowPrice,
+                type: "Buy Now purchase",
+                time: new Date().toLocaleString()
+            });
+
+            saveData();
+            displayAuctions();
+            updateDashboard();
+
+            alert(
+                `Congratulations! You purchased ${auction.name}.`
+            );
+        }
+
+        function toggleWatchlist(id) {
+            if (!currentUser) {
+                alert("Please login to use the watchlist.");
+                openLogin();
+                return;
+            }
+
+            if (watchlist.includes(id)) {
+                watchlist = watchlist.filter(itemId => itemId !== id);
+            } else {
+                watchlist.push(id);
+            }
+
+            saveData();
+            displayAuctions();
+            updateDashboard();
+        }
+
+        function filterAuctions() {
+            const searchText = document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase();
+
+            const category = document
+                .getElementById("categoryFilter")
+                .value;
+
+            const filtered = auctions.filter(item => {
+                const matchesSearch =
+                    item.name.toLowerCase().includes(searchText) ||
+                    item.description.toLowerCase().includes(searchText);
+
+                const matchesCategory =
+                    category === "all" ||
+                    item.category === category;
+
+                return matchesSearch && matchesCategory;
+            });
+
+            displayAuctions(filtered);
+        }
+
+        function updateDashboard() {
+            if (!currentUser) {
+                document.getElementById("totalBids").innerText = "0";
+                document.getElementById("watchCount").innerText = "0";
+                document.getElementById("sellingCount").innerText = "0";
+
+                document.getElementById("bidHistory").innerHTML =
+                    "<li>Login to view your bid history.</li>";
+
+                return;
+            }
+
+            const userBids = bidHistory.filter(
+                bid => bid.userEmail === currentUser.email
+            );
+
+            const userAuctions = auctions.filter(
+                item => item.seller === currentUser.name
+            );
+
+            document.getElementById("totalBids").innerText =
+                userBids.length;
+
+            document.getElementById("watchCount").innerText =
+                watchlist.length;
+
+            document.getElementById("sellingCount").innerText =
+                userAuctions.length;
+
+            const history = document.getElementById("bidHistory");
+
+            if (userBids.length === 0) {
+                history.innerHTML =
+                    "<li>No bids placed yet.</li>";
+                return;
+            }
+
+            history.innerHTML = userBids
+                .slice()
+                .reverse()
+                .map(bid => `
+                    <li>
+                        <strong>${bid.itemName}</strong><br>
+                        Type: ${bid.type}<br>
+                        Amount: ₹${bid.amount}<br>
+                        <small>${bid.time}</small>
+                    </li>
+                `)
+                .join("");
+        }
+
+        document.getElementById("sellForm").addEventListener(
+            "submit",
+            function(event) {
+                event.preventDefault();
+
+                if (!currentUser) {
+                    alert("Please login before creating an auction.");
+                    openLogin();
+                    return;
+                }
+
+                const newAuction = {
+                    id: Date.now(),
+                    name: document.getElementById("itemName").value,
+                    price: Number(
+                        document.getElementById("startingPrice").value
+                    ),
+                    category: document.getElementById("itemCategory").value,
+                    bidType: document.getElementById("bidType").value,
+                    minimumIncrement: Number(
+                        document.getElementById("minimumIncrement").value
+                    ),
+                    reservePrice: Number(
+                        document.getElementById("reservePrice").value || 0
+                    ),
+                    buyNowPrice: Number(
+                        document.getElementById("buyNowPrice").value || 0
+                    ),
+                    image: document.getElementById("itemImage").value,
+                    description:
+                        document.getElementById("itemDescription").value,
+                    endTime: Date.now() + 86400000,
+                    seller: currentUser.name,
+                    bids: []
+                };
+
+                auctions.push(newAuction);
+
+                saveData();
+                displayAuctions();
+                updateDashboard();
+
+                this.reset();
+
+                document.getElementById("minimumIncrement").value = 50;
+
+                alert("Auction created successfully!");
+
+                scrollToSection("auctions");
+            }
+        );
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({
+                behavior: "smooth"
+            });
+        }
+
+        document.getElementById("authModal").addEventListener(
+            "click",
+            function(event) {
+                if (event.target === this) {
+                    closeLogin();
+                }
+            }
+        );
+
+        displayAuctions();
+        updateHeader();
+    </script>
+</body>
+</html>
